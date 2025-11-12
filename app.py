@@ -1095,7 +1095,7 @@ def main():
     demo = GradioInterface.create_interface()
     
     demo.launch(
-        share=False,  # Set to True for public sharing
+        share=True,  # Set to True for public sharing
         server_name="127.0.0.1",
         server_port=7860,
         show_error=True
