@@ -1,0 +1,6 @@
+# Coqui STT Requirements
+coqui-stt-model-manager
+soundfile>=0.10.3
+librosa>=0.9.2
+numpy>=1.21.0
+requests>=2.25.0

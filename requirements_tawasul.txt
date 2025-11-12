@@ -1,0 +1,13 @@
+# Tawasul STT Requirements
+# Arabic Speech Recognition using Tawasul STT V0 model
+torch>=1.12.0
+transformers>=4.20.0
+torchaudio>=0.12.0
+librosa>=0.9.2
+soundfile>=0.10.3
+huggingface-hub>=0.14.0
+numpy>=1.21.0
+
+# Optional: For better performance
+# accelerate>=0.20.0
+# optimum>=1.8.0

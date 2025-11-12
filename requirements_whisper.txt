@@ -1,0 +1,27 @@
+# OpenAI Whisper STT Requirements
+# Requirements for using OpenAI Whisper (local and API)
+
+# Base requirements
+gradio>=4.0.0
+numpy>=1.21.0
+soundfile>=0.12.1
+
+# Whisper local model requirements
+openai-whisper>=20231117
+torch>=1.10.0
+torchaudio>=0.10.0
+
+# Whisper API requirements
+openai>=1.0.0
+
+# Optional for better audio processing
+librosa>=0.9.0
+
+# Installation:
+# pip install -r requirements_whisper.txt
+
+# Notes:
+# - Local models download automatically on first use
+# - API requires OpenAI API key
+# - Model sizes: tiny(39MB) < base(142MB) < small(461MB) < medium(1.5GB) < large(2.9GB)
+# - GPU support automatic if PyTorch with CUDA is installed

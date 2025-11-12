@@ -1,0 +1,139 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "modular-voice-transcriber"
+version = "0.2.0"
+description = "A modular Gradio-based web interface for speech-to-text transcription supporting multiple STT engines"
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "gradio>=4.0.0",
+    "soundfile>=0.12.1",
+    "numpy>=1.21.0",
+    "pathlib2>=2.3.0; python_version < '3.4'",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "black>=22.0.0",
+    "flake8>=4.0.0",
+    "mypy>=1.0.0",
+]
+# OpenAI Whisper STT (local models)
+whisper = [
+    "openai-whisper>=20230314",
+    "torch>=1.10.0",
+    "torchaudio>=0.10.0",
+]
+# OpenAI Whisper API
+whisper-api = [
+    "openai>=1.0.0",
+]
+# Wav2Vec2 models (Hugging Face)
+wav2vec2 = [
+    "transformers>=4.20.0",
+    "torch>=1.12.0",
+    "torchaudio>=0.12.0",
+    "librosa>=0.9.0",  # Optional but recommended
+]
+# HuBERT models (Hugging Face, Arabic Egyptian)
+hubert = [
+    "transformers>=4.20.0",
+    "torch>=1.12.0",
+    "torchaudio>=0.12.0",
+    "librosa>=0.9.2",
+    "soundfile>=0.10.3",
+    "huggingface-hub>=0.14.0",
+]
+# Coqui STT (open-source multilingual)
+coqui = [
+    "coqui-stt>=1.4.0",
+    "soundfile>=0.10.3",
+    "librosa>=0.9.2",
+    "requests>=2.25.0",
+]
+# Vosk STT (offline recognition)
+vosk = [
+    "vosk>=0.3.42",
+    "soundfile>=0.12.1",
+]
+# Tawasul STT (Arabic speech recognition)
+tawasul = [
+    "transformers>=4.20.0",
+    "torch>=1.12.0",
+    "torchaudio>=0.12.0",
+    "librosa>=0.9.2",
+    "soundfile>=0.10.3",
+    "huggingface-hub>=0.14.0",
+]
+# Azure Speech Service
+azure-speech = [
+    "azure-cognitiveservices-speech>=1.25.0",
+]
+# Google Cloud Speech-to-Text
+google-speech = [
+    "google-cloud-speech>=2.15.0",
+]
+# AssemblyAI
+assemblyai = [
+    "assemblyai>=0.15.0",
+]
+# Amazon Transcribe
+aws-transcribe = [
+    "boto3>=1.26.0",
+    "botocore>=1.29.0",
+]
+# All STT engines (for full functionality)
+all-stt = [
+    "openai-whisper>=20230314",
+    "openai>=1.0.0",
+    "transformers>=4.20.0",
+    "torch>=1.12.0",
+    "torchaudio>=0.12.0",
+    "librosa>=0.9.0",
+    "vosk>=0.3.42",
+    "soundfile>=0.10.3",
+    "huggingface-hub>=0.14.0",
+    "coqui-stt>=1.4.0",
+    "requests>=2.25.0",
+    "azure-cognitiveservices-speech>=1.25.0",
+    "google-cloud-speech>=2.15.0",
+    "assemblyai>=0.15.0",
+    "boto3>=1.26.0",
+]
+# Essential models (Whisper + Wav2Vec2 + HuBERT + Vosk + Coqui)
+essential = [
+    "openai-whisper>=20230314",
+    "openai>=1.0.0",
+    "transformers>=4.20.0",
+    "torch>=1.12.0",
+    "torchaudio>=0.12.0",
+    "librosa>=0.9.0",
+    "soundfile>=0.10.3",
+    "huggingface-hub>=0.14.0",
+    "vosk>=0.3.42",
+    "coqui-stt>=1.4.0",
+    "requests>=2.25.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/your-username/modular-voice-transcriber"
+Repository = "https://github.com/your-username/modular-voice-transcriber.git"
+Issues = "https://github.com/your-username/modular-voice-transcriber/issues"
+
+[project.scripts]
+voice-transcriber = "gradio_voice_transcriber_clean:main"
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+
+[tool.uv]
+dev-dependencies = [
+    "pytest>=7.0.0",
+    "black>=22.0.0",
+    "flake8>=4.0.0",
+]

@@ -1,0 +1,24 @@
+# Wav2Vec2 Arabic STT Requirements
+# Minimal requirements for using the Wav2Vec2 Arabic Egyptian model
+
+# Base requirements
+gradio>=4.0.0
+numpy>=1.21.0
+soundfile>=0.12.1
+
+# Wav2Vec2 specific requirements
+transformers>=4.20.0
+torch>=1.12.0
+torchaudio>=0.12.0
+
+# Optional but highly recommended for better audio processing
+librosa>=0.9.0
+
+# Installation:
+# pip install -r requirements_wav2vec2.txt
+
+# Notes:
+# - First model load will download ~1.2GB from Hugging Face Hub
+# - GPU support is automatic if PyTorch with CUDA is installed
+# - Model runs on CPU but GPU is significantly faster for longer audio
+# - Optimized for Arabic Egyptian dialect but works with Standard Arabic

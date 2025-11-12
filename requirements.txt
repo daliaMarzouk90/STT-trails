@@ -1,0 +1,43 @@
+# Modular Voice Transcriber - Core Dependencies
+# Base requirements for the Gradio interface
+gradio>=4.0.0
+soundfile>=0.12.1
+numpy>=1.21.0
+
+# Essential STT Models (Whisper + Wav2Vec2)
+# OpenAI Whisper (local and API)
+openai-whisper>=20231117
+openai>=1.0.0
+
+# Wav2Vec2 (Hugging Face Transformers)
+transformers>=4.20.0
+torch>=1.12.0
+torchaudio>=0.12.0
+
+# Audio processing (recommended)
+librosa>=0.9.0
+
+# Optional: Vosk STT (for offline recognition)
+# vosk>=0.3.42
+
+# Optional: HuBERT Arabic STT (for Arabic Egyptian dialect)
+# Use requirements_hubert.txt for full setup
+
+# Optional: Coqui STT (open-source multilingual)
+# Use requirements_coqui.txt for full setup
+
+# Optional: Tawasul STT (for Arabic speech recognition)
+# Use requirements_tawasul.txt for full setup
+
+# Installation options:
+# pip install -r requirements.txt                    # Core + Essential STT models
+# pip install -r requirements_whisper.txt            # Whisper-only setup
+# pip install -r requirements_wav2vec2.txt           # Wav2Vec2-only setup  
+# pip install -r requirements_vosk.txt               # Vosk-only setup
+# pip install -r requirements_hubert.txt             # HuBERT Arabic-only setup
+# pip install -r requirements_coqui.txt              # Coqui STT-only setup
+# pip install -r requirements_tawasul.txt            # Tawasul STT-only setup
+# pip install -e .[essential]                        # Same as core
+# pip install -e .[all-stt]                         # All supported STT engines
+# pip install -e .[whisper,wav2vec2,vosk,hubert,coqui,tawasul] # Specific models only
+# pip install -e .[dev]                             # Development dependencies
