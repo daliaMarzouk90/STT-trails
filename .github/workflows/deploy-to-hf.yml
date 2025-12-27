@@ -46,17 +46,15 @@ jobs:
           git config --global user.name "GitHub Actions"
 
           # Clone the Hugging Face Space repo using the token
-          git clone https://huggingface.co/spaces/$HF_USERNAME/$HF_SPACE_NAME hf-space
-
-          # Enable extglob for advanced pattern matching
-          shopt -s extglob
-
-          # Copy all files except .git and hf-space to the repo
-          cp -r !(hf-space|.git) hf-space/
-
+          git clone https://$HF_USERNAME:$HF_TOKEN@huggingface.co/spaces/$HF_USERNAME/$HF_SPACE_NAME hf-space
+          
+          # Copy all files to HF space
+          cp -r * hf-space/ || true
+          
+          # Push to Hugging Face
           cd hf-space
           git add .
-          git commit -m "Update Space from GitHub Actions" || echo "No changes to commit"
-          git push https://$HF_SPACE_GIT_TOKEN@huggingface.co/spaces/$HF_USERNAME/$HF_SPACE_NAME.git main
-
-          cd ..
+          git commit -m "Deploy from bot_text branch - $(date)" || echo "No changes to commit"
+          git push https://$HF_USERNAME:$HF_TOKEN@huggingface.co/spaces/$HF_USERNAME/$HF_SPACE_NAME main
+      - name: Deployment Complete
+        run: echo "Deployment to Hugging Face Spaces completed successfully."
