@@ -38,20 +38,25 @@ jobs:
       - name: Push to Hugging Face Space via git
         env:
           HF_SPACE_GIT_TOKEN: ${{ secrets.HF_SPACE_GIT_TOKEN }}
+          HF_USERNAME: ${{ secrets.HF_USERNAME }}
+          HF_SPACE_NAME: ${{ secrets.HF_SPACE_NAME }}
         run: |
           # Set up git config
           git config --global user.email "actions@github.com"
           git config --global user.name "GitHub Actions"
 
           # Clone the Hugging Face Space repo using the token
-          git clone https://huggingface.co/spaces/<your-username>/<your-space-repo> hf-space-repo
+          git clone https://huggingface.co/spaces/$HF_USERNAME/$HF_SPACE_NAME hf-space
 
-          # Copy all files (except .git) to the repo
-          rsync -av --exclude='.git' ./ hf-space-repo/
+          # Enable extglob for advanced pattern matching
+          shopt -s extglob
 
-          cd hf-space-repo
+          # Copy all files except .git and hf-space to the repo
+          cp -r !(hf-space|.git) hf-space/
+
+          cd hf-space
           git add .
           git commit -m "Update Space from GitHub Actions" || echo "No changes to commit"
-          git push https://huggingface.co/${HF_SPACE_GIT_TOKEN}@huggingface.co/spaces/<your-username>/<your-space-repo>.git main
+          git push https://$HF_SPACE_GIT_TOKEN@huggingface.co/spaces/$HF_USERNAME/$HF_SPACE_NAME.git main
 
           cd ..
