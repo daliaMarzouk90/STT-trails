@@ -29,6 +29,12 @@ except ImportError:
 
 # Try to import HuBERT Arabic STT (optional)
 try:
+try:
+     from stt.chirp3_stt import Chirp3STT
+     CHIRP3_AVAILABLE = True
+except ImportError:
+     Chirp3STT = None
+     CHIRP3_AVAILABLE = False
     from stt.hubert_arabic_stt import HuBERTArabicSTT
     HUBERT_AVAILABLE = True
 except ImportError:
@@ -39,6 +45,8 @@ try:
     from stt.vosk_stt import VoskSTT
     VOSK_AVAILABLE = True
 except ImportError:
+if 'Chirp3STT' in globals():
+     AVAILABLE_STT.append(("Chirp3 (Google STT)", Chirp3STT))
     VOSK_AVAILABLE = False
 
 # Try to import Coqui STT (optional)

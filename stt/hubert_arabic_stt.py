@@ -52,6 +52,47 @@ logger = logging.getLogger(__name__)
 
 
 class HuBERTArabicSTT(BaseSTT):
+    class Chirp3STT(BaseSTT):
+        """
+        Chirp3 Speech-to-Text implementation (stub).
+        Replace this stub with actual Chirp3 model integration as needed.
+        """
+        model_name = "Chirp3STT"
+        model = None
+        processor = None
+        is_loaded = False
+        config = {
+            "model_id": "chirp3/ar-egyptian",  # Example placeholder
+            "device": "auto",
+            "sample_rate": 16000,
+            "language": "ar-EG",
+        }
+
+        @classmethod
+        def load_model(cls, model_id: str = None, device: str = "auto", **kwargs) -> None:
+            """
+            Load the Chirp3 model (stub).
+            """
+            # TODO: Implement actual Chirp3 model loading
+            cls.is_loaded = True
+            cls.config["model_id"] = model_id or cls.config["model_id"]
+            cls.config["device"] = device
+
+        @classmethod
+        def transcribe_audio(cls, audio_data, sample_rate: int = None):
+            """
+            Transcribe audio using Chirp3 model (stub).
+            """
+            if not cls.is_loaded:
+                raise RuntimeError(f"{cls.model_name} not loaded. Call load_model() first.")
+            # TODO: Implement actual transcription logic
+            from .stt_base import STTResult
+            return STTResult(
+                text="[Chirp3STT stub: no transcription]",
+                confidence=0.0,
+                processing_time=0.0,
+                metadata={"note": "Chirp3STT is a stub."}
+            )
     """
     HuBERT Arabic Egyptian STT implementation using Hugging Face transformers.
     
