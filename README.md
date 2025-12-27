@@ -1,3 +1,14 @@
+---
+title: Modular Voice Transcriber
+emoji: 🗣️
+colorFrom: blue
+colorTo: purple
+sdk: gradio
+app_file: app.py
+python_version: 3.10
+pinned: false
+---
+
 # Modular Voice Transcriber
 
 A comprehensive, modular Gradio-based web interface for speech-to-text transcription supporting multiple STT engines including OpenAI Whisper, Wav2Vec2, HuBERT Arabic, Tawasul, Vosk, and Coqui STT models.
