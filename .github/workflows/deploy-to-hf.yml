@@ -37,7 +37,7 @@ jobs:
 
       - name: Push to Hugging Face Space via git
         env:
-          HF_SPACE_GIT_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
           HF_USERNAME: ${{ secrets.HF_USERNAME }}
           HF_SPACE_NAME: ${{ secrets.HF_SPACE_NAME }}
         run: |
@@ -46,7 +46,7 @@ jobs:
           git config --global user.name "GitHub Actions"
 
           # Clone the Hugging Face Space repo using the token
-          git clone https://$HF_USERNAME:$HF_TOKEN@huggingface.co/spaces/$HF_USERNAME/$HF_SPACE_NAME hf-space
+          git clone https://$HF_USERNAME:$HF_TOKEN@huggingface.co/spaces/$HF_USERNAME/$HF_SPACE_NAME.git hf-space
           
           # Copy all files to HF space
           cp -r * hf-space/ || true
@@ -55,6 +55,6 @@ jobs:
           cd hf-space
           git add .
           git commit -m "Deploy from bot_text branch - $(date)" || echo "No changes to commit"
-          git push https://$HF_USERNAME:$HF_TOKEN@huggingface.co/spaces/$HF_USERNAME/$HF_SPACE_NAME main
+          git push https://$HF_USERNAME:$HF_TOKEN@huggingface.co/spaces/$HF_USERNAME/$HF_SPACE_NAME.git main
       - name: Deployment Complete
         run: echo "Deployment to Hugging Face Spaces completed successfully."
