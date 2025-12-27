@@ -27,6 +27,15 @@ try:
 except ImportError:
     WAV2VEC2_AVAILABLE = False
 
+
+# Try to import Chirp3 STT (optional)
+try:
+    from stt.chirp3_stt import Chirp3STT
+    CHIRP3_AVAILABLE = True
+except ImportError:
+    Chirp3STT = None
+    CHIRP3_AVAILABLE = False
+
 # Try to import HuBERT Arabic STT (optional)
 try:
     from stt.hubert_arabic_stt import HuBERTArabicSTT
@@ -671,6 +680,47 @@ class ModelManager:
         return info
 
 
+class ImageGallery:
+    """Handle static image gallery with slider navigation."""
+    
+    def __init__(self):
+        """Initialize image gallery with predefined images."""
+        # Define your static images here - you can add more images to this list
+        self.images = [
+            "https://picsum.photos/400/300?random=1",  # Random image 1
+            "https://picsum.photos/400/300?random=2",  # Random image 2
+            "https://picsum.photos/400/300?random=3",  # Random image 3
+            "https://picsum.photos/400/300?random=4",  # Random image 4
+            "https://picsum.photos/400/300?random=5",  # Random image 5
+        ]
+        
+        # Alternative: Use local images (uncomment and modify paths as needed)
+        # self.images = [
+        #     "path/to/image1.jpg",
+        #     "path/to/image2.png", 
+        #     "path/to/image3.jpg",
+        #     "path/to/image4.png",
+        #     "path/to/image5.jpg",
+        # ]
+        
+        self.current_index = 0
+    
+    def get_image_by_index(self, index: int) -> str:
+        """Get image by index with bounds checking."""
+        if 0 <= index < len(self.images):
+            self.current_index = index
+            return self.images[index]
+        return self.images[0]  # Return first image as fallback
+    
+    def get_image_info(self, index: int) -> str:
+        """Get information about current image."""
+        return f"Image {index + 1} of {len(self.images)}"
+    
+    def get_total_images(self) -> int:
+        """Get total number of images."""
+        return len(self.images)
+
+
 class TranscriptionEngine:
     """Handle audio transcription using the loaded STT model."""
     
@@ -795,19 +845,69 @@ class GradioInterface:
     @staticmethod
     def create_interface():
         """Create the main Gradio interface."""
+        
+        # Initialize image gallery
+        gallery = ImageGallery()
+        
         with gr.Blocks(
-            title="🎙️ Modular Voice Transcriber",
+            title="🎙️ Modular Voice Transcriber with Image Gallery",
             theme=gr.themes.Soft()
         ) as demo:
             
             gr.Markdown(
                 """
-                # 🎙️ Modular Voice Transcriber
+                # 🎙️ Modular Voice Transcriber with Image Gallery
                 
-                A flexible interface supporting multiple STT models. 
-                Easily extensible for new transcription engines.
+                A flexible interface supporting multiple STT models with an integrated image viewer.
+                Easily extensible for new transcription engines and image collections.
                 """
             )
+            
+            # Image Gallery Section (at the top)
+            with gr.Row():
+                with gr.Column():
+                    gr.Markdown("### 🖼️ Image Gallery")
+                    
+                    # Main image display
+                    image_display = gr.Image(
+                        value=gallery.get_image_by_index(0),
+                        label="Selected Image",
+                        height=400,
+                        width=500,
+                        interactive=False
+                    )
+                    
+                    # Image info
+                    image_info = gr.Textbox(
+                        value=gallery.get_image_info(0),
+                        label="Image Info",
+                        interactive=False
+                    )
+                    
+                    # Horizontal thumbnail gallery with actual image previews
+                    gr.Markdown("**Click on a thumbnail to view:**")
+                    with gr.Row():
+                        # Create thumbnail gallery using Gradio's Gallery component
+                        thumbnail_gallery = gr.Gallery(
+                            value=gallery.images,  # All images as thumbnails
+                            label="Image Gallery",
+                            show_label=False,
+                            elem_id="thumbnail_gallery",
+                            columns=len(gallery.images),  # Horizontal layout
+                            rows=1,
+                            height=120,  # Small thumbnail height
+                            allow_preview=False,  # Don't show preview popup
+                            interactive=True
+                        )
+                    
+                    # Navigation buttons (kept for convenience)
+                    gr.Markdown("**Or use navigation:**")
+                    with gr.Row():
+                        prev_btn = gr.Button("◀️ Previous", size="sm")
+                        next_btn = gr.Button("Next ▶️", size="sm")
+                        random_btn = gr.Button("🎲 Random", size="sm")
+            
+            gr.Markdown("---")  # Separator line
             
             with gr.Row():
                 # Model Configuration Panel
@@ -928,6 +1028,7 @@ class GradioInterface:
                 - **Use good audio quality** - avoid background noise
                 - **Try different models** - larger models are more accurate but slower
                 - **Check quality analysis** to identify audio issues
+                - **Browse images** using the slider or navigation buttons
                 """
             )
             
@@ -1002,6 +1103,40 @@ class GradioInterface:
                 
                 return report, gr.update(visible=True)
             
+            # Image Gallery Event Handlers
+            current_image_index = [0]  # Use list to make it mutable in nested functions
+            
+            def select_image_from_gallery(evt: gr.SelectData):
+                """Handle image selection from gallery thumbnail."""
+                index = evt.index
+                current_image_index[0] = index
+                image_path = gallery.get_image_by_index(index)
+                image_info_text = gallery.get_image_info(index)
+                return image_path, image_info_text
+            
+            def go_to_previous_image():
+                """Go to previous image."""
+                current_image_index[0] = max(0, current_image_index[0] - 1)
+                image_path = gallery.get_image_by_index(current_image_index[0])
+                image_info_text = gallery.get_image_info(current_image_index[0])
+                return image_path, image_info_text
+            
+            def go_to_next_image():
+                """Go to next image."""
+                current_image_index[0] = min(gallery.get_total_images() - 1, current_image_index[0] + 1)
+                image_path = gallery.get_image_by_index(current_image_index[0])
+                image_info_text = gallery.get_image_info(current_image_index[0])
+                return image_path, image_info_text
+            
+            def go_to_random_image():
+                """Go to random image."""
+                import random
+                current_image_index[0] = random.randint(0, gallery.get_total_images() - 1)
+                image_path = gallery.get_image_by_index(current_image_index[0])
+                image_info_text = gallery.get_image_info(current_image_index[0])
+                return image_path, image_info_text
+                return image_path, image_info_text, new_index
+            
             # Connect events
             model_selector.change(
                 fn=update_model_options,
@@ -1046,6 +1181,29 @@ class GradioInterface:
                 fn=TranscriptionEngine.transcribe,
                 inputs=[audio_input, language],
                 outputs=[transcription_output, confidence_output, processing_output]
+            )
+            
+            # Image Gallery Event Connections
+            # Connect thumbnail gallery selection
+            thumbnail_gallery.select(
+                fn=select_image_from_gallery,
+                outputs=[image_display, image_info]
+            )
+            
+            # Connect navigation buttons
+            prev_btn.click(
+                fn=go_to_previous_image,
+                outputs=[image_display, image_info]
+            )
+            
+            next_btn.click(
+                fn=go_to_next_image,
+                outputs=[image_display, image_info]
+            )
+            
+            random_btn.click(
+                fn=go_to_random_image,
+                outputs=[image_display, image_info]
             )
         
         return demo
@@ -1095,9 +1253,9 @@ def main():
     demo = GradioInterface.create_interface()
     
     demo.launch(
-        share=True,  # Set to True for public sharing
+        share=False,  # Set to True for public sharing
         server_name="127.0.0.1",
-        server_port=7860,
+        server_port=7861,
         show_error=True
     )
 
