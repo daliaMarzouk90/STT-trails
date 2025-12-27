@@ -35,9 +35,23 @@ jobs:
         run: |
           huggingface-cli login --token $HF_TOKEN
 
-      - name: Push to Hugging Face Space
+      - name: Push to Hugging Face Space via git
         env:
-          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_SPACE_GIT_TOKEN: ${{ secrets.HF_SPACE_GIT_TOKEN }}
         run: |
-          huggingface-cli repo create stt-trails --type=space --space-sdk=gradio || true
-          huggingface-cli repo upload stt-trails . --include="*" --repo-type=space --token $HF_TOKEN
+          # Set up git config
+          git config --global user.email "actions@github.com"
+          git config --global user.name "GitHub Actions"
+
+          # Clone the Hugging Face Space repo using the token
+          git clone https://huggingface.co/spaces/<your-username>/<your-space-repo> hf-space-repo
+
+          # Copy all files (except .git) to the repo
+          rsync -av --exclude='.git' ./ hf-space-repo/
+
+          cd hf-space-repo
+          git add .
+          git commit -m "Update Space from GitHub Actions" || echo "No changes to commit"
+          git push https://huggingface.co/${HF_SPACE_GIT_TOKEN}@huggingface.co/spaces/<your-username>/<your-space-repo>.git main
+
+          cd ..
